@@ -16,9 +16,9 @@ class Navigation extends React.Component {
             <div>
                 <header>
                     <div id="header">
-                        <div id="top-logo" className="logo">
-                            <p>Questioner</p>
-                        </div>
+                        <a href="/"><div id="top-logo" className="logo">
+                           <p>Questioner</p>
+                        </div></a>
                         <nav>
                             <ul>
                                 <li><a href="/">Home</a></li>

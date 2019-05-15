@@ -33,11 +33,9 @@ li {
 
 #top-logo{
     text-align: center;
-    padding: 25px 20px;
     transition: .3s;
     font-size: 3em;
     float: left;
-
 }
 
 #top-logo p{
@@ -64,7 +62,7 @@ nav ul{
 
 
 nav ul li{
-    margin: 10px;
+    margin: 0 10px;
 }
 
 nav ul li a:hover{

@@ -80,7 +80,8 @@ class SigupForm extends React.Component {
                   id="email"
                   name=""
                   value={this.state.email}
-                  autofocus
+                  onChange={this.handleEmail}
+                  autoFocus
                 />
               </div>
 
@@ -91,6 +92,7 @@ class SigupForm extends React.Component {
                   id="firstname"
                   name=""
                   value={this.state.firstname}
+                  onChange={this.handleFirstname}
                 />
               </div>
 
@@ -101,6 +103,7 @@ class SigupForm extends React.Component {
                   name=""
                   id="lastname"
                   value={this.state.lastname}
+                  onChange={this.handleLastname}
                 />
               </div>
 
@@ -111,6 +114,7 @@ class SigupForm extends React.Component {
                   name=""
                   id="othername"
                   value={this.state.othername}
+                  onChange={this.handleOthername}
                 />
               </div>
               <div className="textbox">
@@ -120,6 +124,7 @@ class SigupForm extends React.Component {
                   name=""
                   id="username"
                   value={this.state.username}
+                  onChange={this.handleUsername}
                 />
               </div>
 
@@ -130,6 +135,7 @@ class SigupForm extends React.Component {
                   name=""
                   id="phonenumber"
                   value={this.state.phonenumber}
+                  onChange={this.handlePhonenumber}
                 />
               </div>
 
@@ -140,6 +146,7 @@ class SigupForm extends React.Component {
                   name=""
                   id="password"
                   value={this.state.password}
+                  onChange={this.handlePassword}
                 />
               </div>
 
@@ -149,7 +156,7 @@ class SigupForm extends React.Component {
               <div className="button">
                 <input
                   id="signup-btn"
-                  class="signup-btn"
+                  className="signup-btn"
                   type="button"
                   name=""
                   value="Create Account"

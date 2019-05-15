@@ -1,0 +1,9 @@
+.bg-image {
+    background: url('../images/background.jpg') no-repeat center center fixed;
+}
+
+.card-container{
+    display: block;
+    width: 90%;
+    margin: auto;
+}

@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink, withRouter } from "react-router-dom";
 import { Alert } from "reactstrap";
 
 const BASE_URL = "https://misocho01-questioner.herokuapp.com/api/v2";
@@ -43,6 +44,7 @@ class LoginForm extends React.Component {
           this.setState({
             message: data.message
           });
+          this.props.history.push("/")
         }
       });
   }
@@ -79,7 +81,7 @@ class LoginForm extends React.Component {
                 />
               </div>
               <div className="account page-text">
-                Don't have an account? <a href="/signup">Signup</a>
+                Don't have an account? <NavLink to="/signup">Signup</NavLink>
               </div>
               <div className="button">
                 <input
@@ -98,4 +100,4 @@ class LoginForm extends React.Component {
   }
 }
 
-export default LoginForm;
+export default withRouter(LoginForm);

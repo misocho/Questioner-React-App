@@ -1,37 +1,42 @@
 import React from "react";
-import {
-    Navbar,
-    NavbarToggler,
-    NavbarBrand,
-    NavItem,
-    NavLink,
-    Button
-} from 'reactstrap';
+import { NavLink } from "react-router-dom";
 
-import '../css/navigation.css'
+
+import "../css/navigation.css";
 
 class Navigation extends React.Component {
-    render() {
-        return (
-            <div>
-                <header>
-                    <div id="header">
-                        <a href="/"><div id="top-logo" className="logo">
-                           <p>Questioner</p>
-                        </div></a>
-                        <nav>
-                            <ul>
-                                <li><a href="/">Home</a></li>
-                                <li><a href="/login" className="focus">Login</a></li>
-                                <li><a href="/signup" className="focus">Signup</a></li>
-
-                            </ul>
-                        </nav>
-                    </div>
-                </header>
-            </div>
-        );
-    }
+  render() {
+    return (
+      <div>
+        <header>
+          <div id="header">
+            <NavLink to="/">
+              <div id="top-logo" className="logo">
+                <p>Questioner</p>
+              </div>
+            </NavLink>
+            <nav>
+              <ul>
+                <li>
+                  <NavLink to="/">Home</NavLink>
+                </li>
+                <li>
+                  <NavLink to="/login" className="focus">
+                    Login
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink to="/signup" className="focus">
+                    Signup
+                  </NavLink>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </header>
+      </div>
+    );
+  }
 }
 
 export default Navigation;

@@ -1,5 +1,6 @@
 import React from "react";
-import SnackBar from "react-material-snackbar";
+import { NavLink, withRouter } from "react-router-dom";
+
 
 const BASE_URL = "https://misocho01-questioner.herokuapp.com/api/v2";
 
@@ -57,7 +58,7 @@ class SigupForm extends React.Component {
       .then(res => res.json())
       .then(data => {
         if (data.status === 200) {
-          console.log(data)
+          this.props.history.push("/")
         }
       });
   }
@@ -164,7 +165,7 @@ class SigupForm extends React.Component {
               </div>
 
               <div className="account page-text">
-                Already have an account? <a href="/login">Login</a>
+                Already have an account? <NavLink to="/login">Login</NavLink>
               </div>
               <div className="button">
                 <input
@@ -183,4 +184,4 @@ class SigupForm extends React.Component {
   }
 }
 
-export default SigupForm;
+export default withRouter(SigupForm);

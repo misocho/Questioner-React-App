@@ -1,4 +1,7 @@
 import React from "react";
+import SnackBar from "react-material-snackbar";
+
+const BASE_URL = "https://misocho01-questioner.herokuapp.com/api/v2";
 
 class SigupForm extends React.Component {
   constructor(props) {
@@ -9,58 +12,54 @@ class SigupForm extends React.Component {
       lastname: "",
       othername: "",
       username: "",
-      phonenumber: "",
-      password: ""
+      phoneNumber: "",
+      password: "",
+      confirmPassword: ""
     };
-    this.handleEmail = this.handleEmail.bind(this);
-    this.handleFirstname = this.handleFirstname.bind(this);
-    this.handleLastname = this.handleLastname.bind(this);
-    this.handleOthername = this.handleOthername.bind(this);
-    this.handleUsername = this.handleUsername.bind(this);
-    this.handlePhonenumber = this.handlePhonenumber.bind(this);
-    this.handlePassword = this.handlePassword.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleEmail(event) {
-    this.setState({
-      email: event.target.value
-    });
+  handleChange(prop) {
+    return event => {
+      this.setState({
+        [prop]: event.target.value
+      });
+    };
   }
 
-  handleFirstname(event) {
-    this.setState({
-      firstname: event.target.value
-    });
-  }
-
-  handleLastname(event) {
-    this.setState({
-      lastname: event.target.value
-    });
-  }
-
-  handleOthername(event) {
-    this.setState({
-      othername: event.target.value
-    });
-  }
-
-  handleUsername(event) {
-    this.setState({
-      username: event.target.value
-    });
-  }
-
-  handlePhonenumber(event) {
-    this.setState({
-      phonenumber: event.target.value
-    });
-  }
-
-  handlePassword(event) {
-    this.setState({
-      password: event.target.value
-    });
+  handleSubmit(event) {
+    const {
+      email,
+      firstname,
+      lastname,
+      othername,
+      username,
+      phoneNumber,
+      password
+    } = this.state;
+    event.preventDefault();
+    fetch(`${BASE_URL}/auth/signup`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email,
+        firstname,
+        lastname,
+        othername,
+        username,
+        phoneNumber,
+        password
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 200) {
+          console.log(data)
+        }
+      });
   }
 
   render() {
@@ -72,15 +71,15 @@ class SigupForm extends React.Component {
             <div className="page-text">Create Account</div>
           </div>
           <div className="login-form">
-            <form>
+            <form onSubmit={this.handleSubmit}>
               <div className="textbox">
                 <input
                   type="text"
                   placeholder="Email"
                   id="email"
-                  name=""
+                  name="email"
                   value={this.state.email}
-                  onChange={this.handleEmail}
+                  onChange={this.handleChange("email")}
                   autoFocus
                 />
               </div>
@@ -90,9 +89,9 @@ class SigupForm extends React.Component {
                   type="text"
                   placeholder="Firstname"
                   id="firstname"
-                  name=""
+                  name="firstname"
                   value={this.state.firstname}
-                  onChange={this.handleFirstname}
+                  onChange={this.handleChange("firstname")}
                 />
               </div>
 
@@ -100,10 +99,10 @@ class SigupForm extends React.Component {
                 <input
                   type="text"
                   placeholder="Lastname"
-                  name=""
+                  name="lastname"
                   id="lastname"
                   value={this.state.lastname}
-                  onChange={this.handleLastname}
+                  onChange={this.handleChange("lastname")}
                 />
               </div>
 
@@ -111,31 +110,32 @@ class SigupForm extends React.Component {
                 <input
                   type="text"
                   placeholder="Othername"
-                  name=""
+                  name="othername"
                   id="othername"
                   value={this.state.othername}
-                  onChange={this.handleOthername}
+                  onChange={this.handleChange("othername")}
                 />
               </div>
               <div className="textbox">
                 <input
                   type="text"
                   placeholder="Username"
-                  name=""
+                  name="username"
                   id="username"
+                  autoComplete="username"
                   value={this.state.username}
-                  onChange={this.handleUsername}
+                  onChange={this.handleChange("username")}
                 />
               </div>
 
               <div className="textbox">
                 <input
-                  type="text"
+                  type="number"
                   placeholder="Phonenumber"
-                  name=""
+                  name="phonenumber"
                   id="phonenumber"
-                  value={this.state.phonenumber}
-                  onChange={this.handlePhonenumber}
+                  value={this.state.phoneNumber}
+                  onChange={this.handleChange("phoneNumber")}
                 />
               </div>
 
@@ -143,10 +143,23 @@ class SigupForm extends React.Component {
                 <input
                   type="password"
                   placeholder="Password"
-                  name=""
+                  name="password"
                   id="password"
+                  autoComplete="new-password"
                   value={this.state.password}
-                  onChange={this.handlePassword}
+                  onChange={this.handleChange("password")}
+                />
+              </div>
+
+              <div className="textbox">
+                <input
+                  type="password"
+                  placeholder="Confirm Password"
+                  name="confirm-password"
+                  id="confirm-password"
+                  autoComplete="new-password"
+                  value={this.state.confirmPassword}
+                  onChange={this.handleChange("confirmPassword")}
                 />
               </div>
 
@@ -157,8 +170,8 @@ class SigupForm extends React.Component {
                 <input
                   id="signup-btn"
                   className="signup-btn"
-                  type="button"
-                  name=""
+                  type="submit"
+                  name="submit"
                   value="Create Account"
                 />
               </div>

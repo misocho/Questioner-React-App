@@ -10,8 +10,6 @@ const Home = () => {
 
       <div className="card-container">
         <Card />
-        <Card />
-        <Card />
        </div>
     </div>
   );

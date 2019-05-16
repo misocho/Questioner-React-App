@@ -1,25 +1,50 @@
 import React from "react";
+import { Alert } from "reactstrap";
+
+const BASE_URL = "https://misocho01-questioner.herokuapp.com/api/v2";
+
 class LoginForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       username: "",
-      password: ""
+      password: "",
+      message: ""
     };
-    this.handleUsernameChange = this.handleUsernameChange.bind(this);
-    this.handlePasswordChange = this.handlePasswordChange.bind(this);
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleUsernameChange(event) {
-    this.setState({
-      username: event.target.value
-    });
+  handleChange(prop) {
+    return event => {
+      this.setState({
+        [prop]: event.target.value
+      });
+    };
   }
 
-  handlePasswordChange(event) {
-    this.setState({
-      password: event.target.value
-    });
+  handleSubmit(event) {
+    const { username, password } = this.state;
+    event.preventDefault();
+    fetch(`${BASE_URL}/auth/signin`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        username,
+        password
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 200) {
+          this.setState({
+            message: data.message
+          });
+        }
+      });
   }
 
   render() {
@@ -31,14 +56,14 @@ class LoginForm extends React.Component {
             <div className="page-text">Login</div>
           </div>
           <div className="login-form">
-            <form>
+            <form onSubmit={this.handleSubmit}>
               <div className="textbox">
                 <input
                   value={this.state.username}
-                  onChange={this.handleUsernameChange}
+                  onChange={this.handleChange("username")}
                   type="text"
                   placeholder="Username"
-                  name=""
+                  name="username"
                   id="username"
                 />
               </div>
@@ -46,27 +71,22 @@ class LoginForm extends React.Component {
               <div className="textbox">
                 <input
                   value={this.state.password}
-                  onChange={this.handlePasswordChange}
+                  onChange={this.handleChange("password")}
                   type="password"
                   placeholder="Password"
-                  name=""
+                  name="password"
                   id="password"
                 />
               </div>
               <div className="account page-text">
-                Don't have an account? <a href="signup.html">Signup</a>
+                Don't have an account? <a href="/signup">Signup</a>
               </div>
-              <div
-                className="button"
-                onClick={evt => {
-                  console.log("clicked");
-                }}
-              >
+              <div className="button">
                 <input
                   id="signin-btn"
                   className="signup-btn"
-                  type="button"
-                  name=""
+                  type="submit"
+                  name="submit"
                   value="Signin"
                 />
               </div>

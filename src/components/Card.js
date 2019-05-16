@@ -3,15 +3,6 @@ import "../css/card.css";
 
 const BASE_URL = "https://misocho01-questioner.herokuapp.com/api/v2";
 
-const getImageUrl = image_url => {
-  let url = "https://i.imgur.com/";
-  image_url = image_url.replace(url, "");
-  let file = image_url.split(".");
-  let fileName = file[0] + "m";
-  let fileExtension = file[1];
-  let imageThumbnail = url + fileName + "." + fileExtension;
-  return imageThumbnail;
-};
 
 const getMonthDate = meetupDate => {
   let splitDate = meetupDate.split(" ");
@@ -40,9 +31,7 @@ class Card extends React.Component {
       .then(data => {
         if (data.status === 200) {
           var meetups = document.getElementById("card-list");
-          console.log(data.data[0][0].id);
           this.setState({ meetups: data.data[0] });
-          console.log(data.data[0][0].images);
         }
       });
   }

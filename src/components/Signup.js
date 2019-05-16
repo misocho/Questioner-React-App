@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, withRouter } from "react-router-dom";
-
+import { Alert } from "reactstrap";
 
 const BASE_URL = "https://misocho01-questioner.herokuapp.com/api/v2";
 
@@ -15,10 +15,18 @@ class SigupForm extends React.Component {
       username: "",
       phoneNumber: "",
       password: "",
-      confirmPassword: ""
+      confirmPassword: "",
+      message: "",
+      color: "",
+      visible: true
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.onDismiss = this.onDismiss.bind(this);
+  }
+
+  onDismiss() {
+    this.setState({ visible: false });
   }
 
   handleChange(prop) {
@@ -37,35 +45,71 @@ class SigupForm extends React.Component {
       othername,
       username,
       phoneNumber,
-      password
+      password,
+      confirmPassword
     } = this.state;
     event.preventDefault();
-    fetch(`${BASE_URL}/auth/signup`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        email,
-        firstname,
-        lastname,
-        othername,
-        username,
-        phoneNumber,
-        password
-      })
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === 200) {
-          this.props.history.push("/")
-        }
+
+    if (password !== confirmPassword) {
+      this.setState({
+        message: "Passwords do not match",
+        color: "danger"
       });
+    } else {
+      fetch(`${BASE_URL}/auth/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email,
+          firstname,
+          lastname,
+          othername,
+          username,
+          phoneNumber,
+          password
+        })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 201) {
+            this.setState({
+              message: data.message,
+              color: "success"
+            });
+            setTimeout(() => {
+              this.props.history.push("/");
+            }, 2000);
+          } else {
+            if (data.message) {
+              this.setState({
+                message: data.message,
+                color: "danger"
+              });
+            } else if(data.error) {
+              this.setState({
+                message: data.error,
+                color: "danger"
+              });
+            }
+          }
+        });
+    }
   }
 
   render() {
     return (
       <div className="form-container">
+        {this.state.message && (
+          <Alert
+            color={this.state.color}
+            isOpen={this.state.visible}
+            toggle={this.onDismiss}
+          >
+            {this.state.message}
+          </Alert>
+        )}
         <div className="login-box">
           <div className="welcome-box">
             <div className="welcome-text">Welcome</div>

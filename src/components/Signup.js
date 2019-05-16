@@ -17,10 +17,16 @@ class SigupForm extends React.Component {
       password: "",
       confirmPassword: "",
       message: "",
-      color: ""
+      color: "",
+      visible: true
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.onDismiss = this.onDismiss.bind(this);
+  }
+
+  onDismiss() {
+    this.setState({ visible: false });
   }
 
   handleChange(prop) {
@@ -49,36 +55,46 @@ class SigupForm extends React.Component {
         message: "Passwords do not match",
         color: "danger"
       });
-    }
-else{
-    fetch(`${BASE_URL}/auth/signup`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        email,
-        firstname,
-        lastname,
-        othername,
-        username,
-        phoneNumber,
-        password
+    } else {
+      fetch(`${BASE_URL}/auth/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email,
+          firstname,
+          lastname,
+          othername,
+          username,
+          phoneNumber,
+          password
+        })
       })
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === 201) {
-          this.setState({
-            message: data.message,
-            color: "primary"
-          });
-          setTimeout(() => {
-            this.props.history.push("/");
-          }, 2000);
-        }
-        console.log(data);
-      });
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 201) {
+            this.setState({
+              message: data.message,
+              color: "success"
+            });
+            setTimeout(() => {
+              this.props.history.push("/");
+            }, 2000);
+          } else {
+            if (data.message) {
+              this.setState({
+                message: data.message,
+                color: "danger"
+              });
+            } else if(data.error) {
+              this.setState({
+                message: data.error,
+                color: "danger"
+              });
+            }
+          }
+        });
     }
   }
 
@@ -86,7 +102,13 @@ else{
     return (
       <div className="form-container">
         {this.state.message && (
-          <Alert color={this.state.color}>{this.state.message}</Alert>
+          <Alert
+            color={this.state.color}
+            isOpen={this.state.visible}
+            toggle={this.onDismiss}
+          >
+            {this.state.message}
+          </Alert>
         )}
         <div className="login-box">
           <div className="welcome-box">

@@ -10,11 +10,18 @@ class LoginForm extends React.Component {
     this.state = {
       username: "",
       password: "",
-      message: ""
+      message: "",
+      color: "",
+      visible: true
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.onDismiss = this.onDismiss.bind(this);
+  }
+
+  onDismiss() {
+    this.setState({ visible: false });
   }
 
   handleChange(prop) {
@@ -42,11 +49,17 @@ class LoginForm extends React.Component {
       .then(data => {
         if (data.status === 200) {
           this.setState({
-            message: data.message
+            message: data.message,
+            color: "success"
           });
           setTimeout(() => {
-            this.props.history.push("/")
+            this.props.history.push("/");
           }, 2000);
+        } else {
+          this.setState({
+            message: data.message,
+            color: "danger"
+          });
         }
       });
   }
@@ -54,7 +67,15 @@ class LoginForm extends React.Component {
   render() {
     return (
       <div className="form-container">
-      {this.state.message && <Alert color="success">{this.state.message}</Alert>}
+        {this.state.message && (
+          <Alert
+            color={this.state.color}
+            isOpen={this.state.visible}
+            toggle={this.onDismiss}
+          >
+            {this.state.message}
+          </Alert>
+        )}
         <div className="login-box">
           <div className="welcome-box">
             <div className="welcome-text">Hi</div>

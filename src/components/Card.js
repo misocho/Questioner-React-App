@@ -31,9 +31,7 @@ class Card extends React.Component {
       .then(data => {
         if (data.status === 200) {
           var meetups = document.getElementById("card-list");
-          console.log(data.data[0][0].id);
           this.setState({ meetups: data.data[0] });
-          console.log(data.data[0][0].images);
         }
       });
   }

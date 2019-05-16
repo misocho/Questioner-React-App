@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, withRouter } from "react-router-dom";
-
+import { Alert } from "reactstrap";
 
 const BASE_URL = "https://misocho01-questioner.herokuapp.com/api/v2";
 
@@ -15,7 +15,9 @@ class SigupForm extends React.Component {
       username: "",
       phoneNumber: "",
       password: "",
-      confirmPassword: ""
+      confirmPassword: "",
+      message: "",
+      color: ""
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -37,9 +39,18 @@ class SigupForm extends React.Component {
       othername,
       username,
       phoneNumber,
-      password
+      password,
+      confirmPassword
     } = this.state;
     event.preventDefault();
+
+    if (password !== confirmPassword) {
+      this.setState({
+        message: "Passwords do not match",
+        color: "danger"
+      });
+    }
+else{
     fetch(`${BASE_URL}/auth/signup`, {
       method: "POST",
       headers: {
@@ -57,15 +68,26 @@ class SigupForm extends React.Component {
     })
       .then(res => res.json())
       .then(data => {
-        if (data.status === 200) {
-          this.props.history.push("/")
+        if (data.status === 201) {
+          this.setState({
+            message: data.message,
+            color: "primary"
+          });
+          setTimeout(() => {
+            this.props.history.push("/");
+          }, 2000);
         }
+        console.log(data);
       });
+    }
   }
 
   render() {
     return (
       <div className="form-container">
+        {this.state.message && (
+          <Alert color={this.state.color}>{this.state.message}</Alert>
+        )}
         <div className="login-box">
           <div className="welcome-box">
             <div className="welcome-text">Welcome</div>

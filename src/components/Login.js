@@ -44,7 +44,9 @@ class LoginForm extends React.Component {
           this.setState({
             message: data.message
           });
-          this.props.history.push("/")
+          setTimeout(() => {
+            this.props.history.push("/")
+          }, 2000);
         }
       });
   }
@@ -52,6 +54,7 @@ class LoginForm extends React.Component {
   render() {
     return (
       <div className="form-container">
+      {this.state.message && <Alert color="success">{this.state.message}</Alert>}
         <div className="login-box">
           <div className="welcome-box">
             <div className="welcome-text">Hi</div>
@@ -65,6 +68,7 @@ class LoginForm extends React.Component {
                   onChange={this.handleChange("username")}
                   type="text"
                   placeholder="Username"
+                  autoComplete="username"
                   name="username"
                   id="username"
                 />
@@ -76,6 +80,7 @@ class LoginForm extends React.Component {
                   onChange={this.handleChange("password")}
                   type="password"
                   placeholder="Password"
+                  autoComplete="current-password"
                   name="password"
                   id="password"
                 />

@@ -11,7 +11,7 @@ import Navigation from "./components/Navigation";
 
 const App = () => {
   return (
-    <div className="body-box">
+    <div className="body-box" data-test="component-app">
       <BrowserRouter>
         <Navigation />
         <Route path="/" component={Home} exact />

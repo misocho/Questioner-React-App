@@ -1,7 +1,6 @@
 import actionTypes from "../actions/actionTypes";
 
 export const meetupsReducer = (state = [], action) => {
-    console.log("meetups reducer", action)
     switch (action.type) {
         case actionTypes.MEETUPS:
             return [...state, ...action.payload];

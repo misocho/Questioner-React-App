@@ -16,7 +16,7 @@ const getMonthDate = meetupDate => {
   };
 };
 
-class Card extends React.Component {
+export class UnconnectedCard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -24,28 +24,22 @@ class Card extends React.Component {
 
   componentDidMount() {
     axios.get(`${BASE_URL}/meetups/upcoming`).then(response => {
-      let data = response.data.data[0];
-      console.log("Life is sweet",data);
-      this.props.display_meetups(data);
-      console.log("props", this.props);
-      var meetups = document.getElementById("card-list");
-
+      let data = response.data;
+      console.log("This is the data status", data.status);
       if (data.status === 200) {
-        
-       
-        this.props.display_meetups(data);
+        this.props.display_meetups(data.data[0]);
+        console.log("props", this.props);
+        var meetups = document.getElementById("card-list");
       }
     });
   }
 
   render() {
-    console.log("this props", this.props)
     const meetups = this.props.meetups;
-    console.log("render meetups", meetups)
     return (
-      <div>
+      <div data-test='component-card'>
         {meetups.map(meetup => (
-          <div className="my-card" key={meetup.id}>
+          <div className="my-card" key={meetup.id} data-test="each-meetup">
             <div className="in-card">
               <div className="in-card-upper">
                 <div className="in-card-image">
@@ -58,7 +52,9 @@ class Card extends React.Component {
                     <div className="month">
                       {getMonthDate(meetup.happeningon).month}
                     </div>
-                    <div className="date">{getMonthDate(meetup.happeningon).date}</div>
+                    <div className="date">
+                      {getMonthDate(meetup.happeningon).date}
+                    </div>
                   </div>
                   <div className="in-card-text">
                     <div className="meetup-text">
@@ -94,5 +90,5 @@ export default withRouter(
   connect(
     mapStateToPros,
     { display_meetups }
-  )(Card)
+  )(UnconnectedCard)
 );

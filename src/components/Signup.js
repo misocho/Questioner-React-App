@@ -1,6 +1,12 @@
 import React from "react";
 import { NavLink, withRouter } from "react-router-dom";
+import equal from "fast-deep-equal";
+
 import { Alert } from "reactstrap";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+
+import { display_message } from "../actions/message";
 
 const BASE_URL = "https://misocho01-questioner.herokuapp.com/api/v2";
 
@@ -15,10 +21,7 @@ class SigupForm extends React.Component {
       username: "",
       phoneNumber: "",
       password: "",
-      confirmPassword: "",
-      message: "",
-      color: "",
-      visible: true
+      confirmPassword: ""
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -26,7 +29,7 @@ class SigupForm extends React.Component {
   }
 
   onDismiss() {
-    this.setState({ visible: false });
+    this.props.display_message({ visible: false });
   }
 
   handleChange(prop) {
@@ -51,10 +54,12 @@ class SigupForm extends React.Component {
     event.preventDefault();
 
     if (password !== confirmPassword) {
-      this.setState({
+      let message = {
         message: "Passwords do not match",
-        color: "danger"
-      });
+        color: "danger",
+        visible: true
+      };
+      this.props.display_message(message);
     } else {
       fetch(`${BASE_URL}/auth/signup`, {
         method: "POST",
@@ -73,24 +78,28 @@ class SigupForm extends React.Component {
       })
         .then(res => res.json())
         .then(data => {
+          console.log(data);
           if (data.status === 201) {
-            this.setState({
+            this.props.display_message({
               message: data.message,
-              color: "success"
+              color: "success",
+              visible: true
             });
             setTimeout(() => {
               this.props.history.push("/");
             }, 2000);
           } else {
             if (data.message) {
-              this.setState({
+              this.props.display_message({
                 message: data.message,
-                color: "danger"
+                color: "danger",
+                visible: true
               });
-            } else if(data.error) {
-              this.setState({
+            } else if (data.error) {
+              this.props.display_message({
                 message: data.error,
-                color: "danger"
+                color: "danger",
+                visible: true
               });
             }
           }
@@ -99,17 +108,19 @@ class SigupForm extends React.Component {
   }
 
   render() {
+    console.log(this.props);
     return (
       <div className="form-container">
-        {this.state.message && (
+        {this.props.messageBox.visible && (
           <Alert
-            color={this.state.color}
-            isOpen={this.state.visible}
+            color={this.props.messageBox.color}
+            isOpen={this.props.messageBox.visible}
             toggle={this.onDismiss}
           >
-            {this.state.message}
+            {this.props.messageBox.message}
           </Alert>
         )}
+
         <div className="login-box">
           <div className="welcome-box">
             <div className="welcome-text">Welcome</div>
@@ -228,4 +239,18 @@ class SigupForm extends React.Component {
   }
 }
 
-export default withRouter(SigupForm);
+const mapStateToProps = state => {
+  console.log(state);
+  return {
+    messageBox: state.messageBox
+  };
+};
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    {
+      display_message
+    }
+  )(SigupForm)
+);

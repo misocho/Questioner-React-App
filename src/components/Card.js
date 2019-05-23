@@ -1,8 +1,12 @@
 import React from "react";
 import "../css/card.css";
+import axios from "axios";
+
+import { withRouter } from "react-router-dom";
+import { display_meetups } from "../actions/meetups";
+import { connect } from "react-redux";
 
 const BASE_URL = "https://misocho01-questioner.herokuapp.com/api/v2";
-
 
 const getMonthDate = meetupDate => {
   let splitDate = meetupDate.split(" ");
@@ -15,29 +19,29 @@ const getMonthDate = meetupDate => {
 class Card extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      meetups: []
-    };
+    this.state = {};
   }
 
   componentDidMount() {
-    fetch(`${BASE_URL}/meetups/upcoming`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json"
+    axios.get(`${BASE_URL}/meetups/upcoming`).then(response => {
+      let data = response.data.data[0];
+      console.log("Life is sweet",data);
+      this.props.display_meetups(data);
+      console.log("props", this.props);
+      var meetups = document.getElementById("card-list");
+
+      if (data.status === 200) {
+        
+       
+        this.props.display_meetups(data);
       }
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === 200) {
-          var meetups = document.getElementById("card-list");
-          this.setState({ meetups: data.data[0] });
-        }
-      });
+    });
   }
 
   render() {
-    const { meetups } = this.state;
+    console.log("this props", this.props)
+    const meetups = this.props.meetups;
+    console.log("render meetups", meetups)
     return (
       <div>
         {meetups.map(meetup => (
@@ -59,7 +63,7 @@ class Card extends React.Component {
                   <div className="in-card-text">
                     <div className="meetup-text">
                       <div className="meetup-title">
-                        <a href="#" className="meetup-link">
+                        <a href={meetup.id} className="meetup-link">
                           {meetup.title}
                         </a>
                       </div>
@@ -79,4 +83,16 @@ class Card extends React.Component {
   }
 }
 
-export default Card;
+const mapStateToPros = state => {
+  console.log("This is the state", state);
+  return {
+    meetups: state.meetups
+  };
+};
+
+export default withRouter(
+  connect(
+    mapStateToPros,
+    { display_meetups }
+  )(Card)
+);

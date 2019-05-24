@@ -3,8 +3,8 @@ import { NavLink, withRouter } from "react-router-dom";
 import equal from "fast-deep-equal";
 
 import { Alert } from "reactstrap";
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+import axios from "axios";
 
 import { display_message } from "../actions/message";
 
@@ -61,12 +61,8 @@ class SigupForm extends React.Component {
       };
       this.props.display_message(message);
     } else {
-      fetch(`${BASE_URL}/auth/signup`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
+      axios
+        .post(`${BASE_URL}/auth/signup`, {
           email,
           firstname,
           lastname,
@@ -75,10 +71,9 @@ class SigupForm extends React.Component {
           phoneNumber,
           password
         })
-      })
-        .then(res => res.json())
-        .then(data => {
-          console.log(data);
+        .then(response => {
+          let data = response.data;
+          console.log("This is the data", data);
           if (data.status === 201) {
             this.props.display_message({
               message: data.message,
@@ -86,31 +81,24 @@ class SigupForm extends React.Component {
               visible: true
             });
             setTimeout(() => {
-              this.props.history.push("/");
+              //this.props.history.push("/");
             }, 2000);
-          } else {
-            if (data.message) {
-              this.props.display_message({
-                message: data.message,
-                color: "danger",
-                visible: true
-              });
-            } else if (data.error) {
-              this.props.display_message({
-                message: data.error,
-                color: "danger",
-                visible: true
-              });
-            }
           }
+        })
+        .catch(error => {
+          let data = error.response.data;
+          this.props.display_message({
+            message: data.error,
+            color: "danger",
+            visible: true
+          });
         });
     }
   }
 
   render() {
-    console.log(this.props);
     return (
-      <div className="form-container">
+      <div className="form-container" data-test="component-signup">
         {this.props.messageBox.visible && (
           <Alert
             color={this.props.messageBox.color}
@@ -174,6 +162,7 @@ class SigupForm extends React.Component {
               </div>
               <div className="textbox">
                 <input
+                  data-test='username-input'
                   type="text"
                   placeholder="Username"
                   name="username"
@@ -240,7 +229,6 @@ class SigupForm extends React.Component {
 }
 
 const mapStateToProps = state => {
-  console.log(state);
   return {
     messageBox: state.messageBox
   };

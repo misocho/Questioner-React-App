@@ -1,6 +1,10 @@
 import React from "react";
 import { NavLink, withRouter } from "react-router-dom";
 import { Alert } from "reactstrap";
+import axios from "axios";
+import { connect } from "react-redux";
+
+import { display_message } from "../actions/message";
 
 const BASE_URL = "https://misocho01-questioner.herokuapp.com/api/v2";
 
@@ -9,10 +13,7 @@ class LoginForm extends React.Component {
     super(props);
     this.state = {
       username: "",
-      password: "",
-      message: "",
-      color: "",
-      visible: true
+      password: ""
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -21,7 +22,7 @@ class LoginForm extends React.Component {
   }
 
   onDismiss() {
-    this.setState({ visible: false });
+    this.props.display_message({ visible: false });
   }
 
   handleChange(prop) {
@@ -35,45 +36,50 @@ class LoginForm extends React.Component {
   handleSubmit(event) {
     const { username, password } = this.state;
     event.preventDefault();
-    fetch(`${BASE_URL}/auth/signin`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
+    axios
+      .post(`${BASE_URL}/auth/signin`, {
         username,
         password
       })
-    })
-      .then(res => res.json())
-      .then(data => {
+      .then(response => {
+        let data = response.data;
         if (data.status === 200) {
-          this.setState({
+          this.props.display_message({
             message: data.message,
-            color: "success"
+            color: "success",
+            visible: true
           });
           setTimeout(() => {
             this.props.history.push("/");
           }, 2000);
         } else {
-          this.setState({
+          this.props.display_message({
             message: data.message,
-            color: "danger"
+            color: "danger",
+            visible: true
           });
         }
+      })
+      .catch(error => {
+        let data = error.response.data;
+        this.props.display_message({
+          message: data.error,
+          color: "danger",
+          visible: true
+        });
       });
   }
 
   render() {
     return (
-      <div className="form-container">
-        {this.state.message && (
+      <div className="form-container" data-test="component-login">
+        {this.props.messageBox.visible && (
           <Alert
-            color={this.state.color}
-            isOpen={this.state.visible}
+            color={this.props.messageBox.color}
+            isOpen={this.props.messageBox.visible}
             toggle={this.onDismiss}
           >
-            {this.state.message}
+            {this.props.messageBox.message}
           </Alert>
         )}
         <div className="login-box">
@@ -126,4 +132,17 @@ class LoginForm extends React.Component {
   }
 }
 
-export default withRouter(LoginForm);
+const mapStateToProps = state => {
+  return {
+    messageBox: state.messageBox
+  };
+};
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    {
+      display_message
+    }
+  )(LoginForm)
+);
